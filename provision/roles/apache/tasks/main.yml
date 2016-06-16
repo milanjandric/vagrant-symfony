@@ -1,0 +1,41 @@
+- name: install apache2
+  apt: name=apache2 state=installed
+
+- name: disable apache2 defaultsite
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  notify:
+    - restart apache2
+
+- name: create apache site config
+  action: template src=apache2.conf.j2 dest=/etc/apache2/sites-available/{{ apache.conf_name }}.conf
+  notify:
+    - restart apache2
+
+- name: create apache ssl site config
+  action: template src=apache2_ssl.conf.j2 dest=/etc/apache2/sites-available/{{ apache.conf_name }}_ssl.conf
+  when: apache.https_port is defined
+  notify:
+    - restart apache2
+
+- name: link site config
+  action: file src=/etc/apache2/sites-available/{{ apache.conf_name }}.conf dest=/etc/apache2/sites-enabled/{{ apache.conf_name }}.conf state=link
+  notify:
+    - restart apache2
+
+- name: link site ssl config
+  action: file src=/etc/apache2/sites-available/{{ apache.conf_name }}_ssl.conf dest=/etc/apache2/sites-enabled/{{ apache.conf_name }}_ssl.conf state=link
+  when: apache.https_port is defined
+  notify:
+    - restart apache2
+
+- name: Apache | Enable ssl module
+  action: command a2enmod ssl
+  when: apache.https_port is defined
+
+- name: enable mode rewrite
+  action: command a2enmod rewrite
+  notify:
+    - restart apache2
+
+- name: service run apache2
+  action: service name=apache2 state=started

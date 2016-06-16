@@ -1,0 +1,19 @@
+---
+mysql_server:
+    port: 3306
+    bind_address: 0.0.0.0
+    root_pass: lozinka
+    service_name: mysql
+    conf_dir: /etc/mysql
+    max_allowed_packet: 200M
+
+mysql_hosts:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+mysql_pkgs:
+  - python-selinux
+  - mysql-server
+  - python-mysqldb

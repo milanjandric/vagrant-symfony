@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: 'Rohan Liston'
+  description: 'Installs a specified version of NodeJS or Version 5.x'
+  company: 'DSTIL'
+  license: 'BSD'
+  min_ansible_version: 1.9
+  platforms:
+  - name: 'Ubuntu'
+    versions:
+      - 'precise'
+  categories:
+    - 'development'
+    - 'web'
+dependencies: []

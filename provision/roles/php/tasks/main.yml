@@ -1,0 +1,65 @@
+- name: php install needed modules
+  action: apt name={{ item }} state=present
+  with_items:
+        - php5
+        - php5-cli
+        - php5-common
+        - php5-curl
+        - php5-gd
+        - php5-pgsql
+        - php5-mysql
+        - php5-mcrypt
+        - php5-xdebug
+        - php5-intl
+
+- name: Set php5-fpm timezone
+  lineinfile: dest=/etc/php5/apache2/php.ini
+              regexp='^;?date.timezone\s*='
+              line="date.timezone = '{{ timezone }}'"
+              state=present
+
+- name: Set php5 cli timezone
+  lineinfile: dest=/etc/php5/cli/php.ini
+                  regexp='^;?date.timezone\s*='
+                  line="date.timezone = '{{ timezone }}'"
+                  state=present
+
+- name: Remove xdebug in cli
+  file: path=/etc/php5/cli/conf.d/20-xdebug.ini state=absent
+
+- name: Set php5 memory_limit
+  lineinfile: dest={{ item }} regexp='^;?memory_limit\s*=' line="memory_limit = -1" state=present
+  with_items:
+    - "/etc/php5/apache2/php.ini"
+    - "/etc/php5/cli/php.ini"
+  notify:
+    - restart apache2
+
+- name: Set php5 upload_max_filesize
+  lineinfile: dest={{ item }} regexp='^;?upload_max_filesize\s*=' line="upload_max_filesize = 200M" state=present
+  with_items:
+    - "/etc/php5/apache2/php.ini"
+    - "/etc/php5/cli/php.ini"
+  notify:
+    - restart apache2
+
+- name: Set php5 upload_max_filesize
+  lineinfile: dest={{ item }} regexp='^;?post_max_size\s*=' line="post_max_size = 200M" state=present
+  with_items:
+    - "/etc/php5/apache2/php.ini"
+    - "/etc/php5/cli/php.ini"
+  notify:
+    - restart apache2
+
+- name: Set php5 max nesting
+  lineinfile: dest={{ item }} regexp='^;?xdebug.max_nesting_level\s*=' line="xdebug.max_nesting_level = 250M" state=present
+  with_items:
+    - "/etc/php5/apache2/php.ini"
+    - "/etc/php5/cli/php.ini"
+  notify:
+    - restart apache2
+
+
+
+- name: Install composer
+  shell: curl -sS https://getcomposer.org/installer | /usr/bin/php -- --install-dir=/usr/local/bin && mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer

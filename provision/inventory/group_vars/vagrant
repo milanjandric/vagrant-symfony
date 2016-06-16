@@ -1,0 +1,22 @@
+name: Keizao
+
+apache:
+    http_port: 80
+    https_port: 443
+    conf_name: default
+    domain: www.phonehubs.dev
+    document_root: /vagrant
+
+mysql_databases:
+ - phonehub_dev
+ - phonehub_test
+ - phonehub_prod
+
+nodejs_update_npm: true               # If true, install the latest npm immediately after installing Node.js
+nodejs_user: 'vagrant'
+nodejs_global_packages:
+  - 'bower'
+  - 'forever'
+  - 'gulp'
+  - 'nodemon'
+  - 'uglify-js'

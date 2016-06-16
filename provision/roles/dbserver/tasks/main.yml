@@ -1,0 +1,61 @@
+- name: Add key for postgres repo
+  action: apt_key url='http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc' state=present
+
+- name: Add postgres apt repo for postgres 9.3
+  action: apt_repository repo='deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' state=present update_cache=yes
+
+- name: Install PostgreSQL packages
+  apt: name={{ item }} state=installed
+  with_items:
+    - postgresql-9.3
+    - postgresql-contrib-9.3
+    - postgresql-client-9.3
+    - libpq-dev
+    - python-psycopg2
+
+- name: Start PostgreSQL and enable at boot
+  service: name=postgresql
+           enabled=yes
+           state=started
+
+- name: Ensure PostgreSQL is listening on all localhost
+  lineinfile: dest=/etc/postgresql/9.3/main/postgresql.conf
+              regexp='^#?listen_addresses\s*='
+              line="listen_addresses = '127.0.0.1'"
+              state=present
+  notify: restart postgresql
+
+- name: Enable passwordless PostgreSQL
+  lineinfile: dest=/etc/postgresql/9.3/main/pg_hba.conf
+              regexp='host\s+all\s+all\s+127.0.0.1/32\s+trust'
+              line='host all all 127.0.0.1/32 trust'
+              insertbefore=BOF
+  notify: restart postgresql
+
+- name: Create PostgreSQL database
+  sudo_user: postgres
+  sudo: yes
+  postgresql_db: name={{ app_name }}
+                 encoding='UTF-8'
+                 lc_collate='{{ locale }}'
+                 lc_ctype='{{ locale }}'
+                 template='template0'
+
+- name: Create PostgreSQL user
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: db={{ app_name }} user={{ app_name }} password={{ app_name }}
+
+- name: Create PostgreSQL test database
+  sudo_user: postgres
+  sudo: yes
+  postgresql_db: name={{ app_name }}_test
+                 encoding='UTF-8'
+                 lc_collate='{{ locale }}'
+                 lc_ctype='{{ locale }}'
+                 template='template0'
+
+- name: Create PostgreSQL test user
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: db={{ app_name }}_test user={{ app_name }} password={{ app_name }}

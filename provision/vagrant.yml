@@ -1,0 +1,15 @@
+- hosts: webservers
+  roles:
+    - common
+    - apache
+    - php
+    - nodejs
+
+- hosts: dbservers
+  roles:
+    - common
+    - mysql
+
+- hosts: vagrant
+  roles:
+    - vagrant

@@ -1,0 +1,33 @@
+<IfModule mod_ssl.c>
+<VirtualHost *:{{ apache.https_port }}>
+    ServerName {{ apache.domain }}
+
+    DocumentRoot "{{ apache.document_root }}/web"
+    DirectoryIndex index.html
+
+    <Directory "{{ apache.document_root }}/web">
+            Options FollowSymLinks
+            AllowOverride All
+            Order allow,deny
+            Allow from all
+            Require all granted
+    </Directory>
+
+    # Don't display anything in the _configs directory
+    <Directory "{{ apache.document_root }}/_configs">
+            Order allow,deny
+            Deny from all
+    </Directory>
+
+    # Don't display xml files since they are only used for module keys and such
+    <Files ~ "^\.xml">
+            Order allow,deny
+            Deny from all
+    </Files>
+
+	SSLEngine on
+
+	SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+	SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+</VirtualHost>
+</IfModule>

@@ -1,0 +1,35 @@
+- name: Set default language
+  template: src=locale.gen dest=/etc/locale.gen
+
+- name: Install locales
+  command: locale-gen
+
+- name: set locale to {{ locale }}
+  command: /usr/sbin/update-locale LANG={{ locale }} LC_ALL={{ locale }} LANGUAGE=en_US:en
+
+- name: set /etc/localtime to {{ timezone }}
+  command: /bin/cp /usr/share/zoneinfo/{{ timezone }} /etc/localtime
+
+- name: set /etc/timezone to {{ timezone }}
+  template: src=timezone dest=/etc/timezone
+  notify: update tzdata
+
+- name: install python-apt and aptitude
+  command: apt-get install -y python-apt-common aptitude python-apt
+
+- name: install python-pycurl
+  apt: pkg=python-pycurl state=present
+
+- name: Update apt repo
+  action: apt update-cache=yes cache_valid_time=86400
+
+- name: Install packages
+  action: apt name={{ item }} state=installed
+  with_items:
+        - sudo
+        - curl
+        - vim
+        - nano
+        - git
+        - python-apt
+        - python-pycurl

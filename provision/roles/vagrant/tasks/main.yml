@@ -1,0 +1,6 @@
+- name: Setup sudoers for vagrant
+  lineinfile: dest=/etc/sudoers
+               regexp='^vagrant ALL=\(ALL\) NOPASSWD:ALL'
+               line="vagrant ALL=(ALL) NOPASSWD:ALL"
+               state=present
+               insertafter=EOF
