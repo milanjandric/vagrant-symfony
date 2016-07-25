@@ -30,3 +30,4 @@
         - git
         - python-apt
         - python-pycurl
+        - zip

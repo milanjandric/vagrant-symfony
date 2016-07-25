@@ -12,6 +12,8 @@
         - php-mcrypt
         - php-xdebug
         - php-intl
+        - php-xml
+        - php-mbstring
 
 - name: Set php-fpm timezone
   lineinfile: dest=/etc/php/7.0/apache2/php.ini
