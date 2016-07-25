@@ -1,8 +1,8 @@
 [webservers]
-33.33.33.15 ansible_become=True
+33.33.33.14 ansible_become=True
 
 [dbservers]
-33.33.33.15 ansible_become=True
+33.33.33.14 ansible_become=True
 
 [vagrant:children]
 webservers

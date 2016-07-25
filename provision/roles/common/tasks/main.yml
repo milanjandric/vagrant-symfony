@@ -7,9 +7,6 @@
 - name: set locale to {{ locale }}
   command: /usr/sbin/update-locale LANG={{ locale }} LC_ALL={{ locale }} LANGUAGE=en_US:en
 
-- name: set /etc/localtime to {{ timezone }}
-  command: /bin/cp /usr/share/zoneinfo/{{ timezone }} /etc/localtime
-
 - name: set /etc/timezone to {{ timezone }}
   template: src=timezone dest=/etc/timezone
   notify: update tzdata

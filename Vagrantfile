@@ -6,8 +6,8 @@ Vagrant.require_version ">= 1.5"
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vbox.box"
-  config.vm.network :private_network, ip: "33.33.33.15"
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.network :private_network, ip: "33.33.33.14"
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", 2048]
     vb.customize ["modifyvm", :id, "--cpus", 1]
